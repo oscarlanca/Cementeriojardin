@@ -1,9 +1,6 @@
 streamlit==1.32.0
-yfinance==0.2.40
-plotly==5.19.0
 pandas==2.2.2
 numpy==1.26.4
-requests
-lxml
-html5lib
 matplotlib==3.8.4
+lifelines
+scikit-learn
