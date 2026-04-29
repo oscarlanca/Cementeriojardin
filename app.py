@@ -193,10 +193,11 @@ with st.sidebar:
     st.divider()
 
     uploaded = st.file_uploader(
-        "Cargar CSV de contratos",
-        type=["csv"],
-        help="Sube el archivo invercruz_deudas_columnas_exactas.csv"
-    )
+    "Cargar CSV de contratos",
+    type=["csv"],
+    help="Opcional: sube otro archivo CSV para reemplazar el predeterminado"
+)
+    archivo_default = "invercruz_deudas_columnas_exactas.csv"
 
     st.divider()
     pagina = st.radio(
@@ -205,32 +206,16 @@ with st.sidebar:
         label_visibility="collapsed"
     )
 
-# ══════════════════════════════════════════════════════════════════════════════
-# PANTALLA PRINCIPAL
-# ══════════════════════════════════════════════════════════════════════════════
-if uploaded is None:
-    st.markdown("# ⚰️ Invercruz · Análisis de Deudas")
-    st.markdown(f"""
-    <div style="background:{CARD_BG}; border:1px solid {BORDER}; border-radius:12px; padding:2rem; max-width:600px; margin-top:1.5rem;">
-      <p style="color:{TEXT_MUTED}; font-size:1rem; line-height:1.7">
-        Sube el archivo <code>invercruz_deudas_columnas_exactas.csv</code> desde el panel
-        izquierdo para comenzar el análisis de supervivencia y clasificación de morosos.
-      </p>
-      <hr style="border-color:{BORDER}; margin:1rem 0">
-      <p style="color:{TEXT_MUTED}; font-size:.85rem">Módulos disponibles:</p>
-      <ul style="color:{TEXT_MAIN}; font-size:.9rem; line-height:2">
-        <li>📊 <strong>Resumen General</strong> — KPIs y distribución de estados</li>
-        <li>🔬 <strong>Análisis KM</strong> — Curvas de Kaplan-Meier interactivas</li>
-        <li>🤖 <strong>Modelo ML</strong> — Regresión Logística + métricas</li>
-        <li>📋 <strong>Datos Crudos</strong> — Tablas filtrables</li>
-      </ul>
-    </div>
-    """, unsafe_allow_html=True)
-    st.stop()
-
 # ── Procesar datos ──────────────────────────────────────────────────────────
 with st.spinner("Procesando datos…"):
-    df, df2, base_contrato = cargar_y_procesar(uploaded, uploaded.name)
+    if uploaded is not None:
+        archivo = uploaded
+        nombre_archivo = uploaded.name
+    else:
+        archivo = archivo_default
+        nombre_archivo = archivo_default
+
+    df, df2, base_contrato = cargar_y_procesar(archivo, nombre_archivo)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # PÁGINA 1 · RESUMEN GENERAL
